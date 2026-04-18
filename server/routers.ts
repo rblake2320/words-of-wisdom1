@@ -24,6 +24,7 @@ import {
   getDb,
 } from "./db";
 import { seedQuotes } from "./seedData";
+import { shortsSeedData } from "./shortsSeedData";
 import { quotes } from "../drizzle/schema";
 import { notifyOwner } from "./_core/notification";
 
@@ -43,6 +44,7 @@ async function runSeed() {
   if (seeded) return 0;
 
   let count = 0;
+  // Seed full-length video quotes
   for (const q of seedQuotes) {
     await db.insert(quotes).values({
       text: q.text,
@@ -54,8 +56,20 @@ async function runSeed() {
     });
     count++;
   }
+  // Seed Shorts quotes
+  for (const q of shortsSeedData) {
+    await db.insert(quotes).values({
+      text: q.quote,
+      speakerName: q.speakerName,
+      videoUrl: `https://www.youtube.com/shorts/${q.videoId}`,
+      videoTitle: q.videoTitle,
+      topic: q.topic.toLowerCase(),
+      source: "School of Hard Knocks",
+    });
+    count++;
+  }
   await markSeeded();
-  console.log(`[Seed] Inserted ${count} quotes`);
+  console.log(`[Seed] Inserted ${count} quotes (${seedQuotes.length} full-length + ${shortsSeedData.length} shorts)`);
   return count;
 }
 

@@ -40,3 +40,8 @@
 - [x] Vitest: favorites router tests (toggle, ids, auth guard)
 - [x] Vitest: admin access control tests
 - [x] Vitest: auth.logout test (pre-existing)
+
+## Expansion: YouTube Shorts Quotes
+- [x] Extract advice from all 559 YouTube Shorts using parallel AI analysis
+- [x] Clean and deduplicate 390 unique Shorts quotes (169 already in DB from full-length videos)
+- [x] Seed all 390 Shorts quotes into the database (total: 559 quotes)
