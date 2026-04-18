@@ -43,39 +43,43 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  /* Editorial Cream Palette */
+  --radius: 0.2rem;
+  --background: oklch(97.5% 0.008 85);
+  --foreground: oklch(12% 0.015 30);
+  --card: oklch(96% 0.006 80);
+  --card-foreground: oklch(12% 0.015 30);
+  --popover: oklch(97% 0.006 80);
+  --popover-foreground: oklch(12% 0.015 30);
+  --primary: oklch(12% 0.015 30);
+  --primary-foreground: oklch(97.5% 0.008 85);
+  --secondary: oklch(92% 0.01 80);
+  --secondary-foreground: oklch(20% 0.015 30);
+  --muted: oklch(92% 0.01 80);
+  --muted-foreground: oklch(45% 0.015 30);
+  --accent: oklch(88% 0.015 80);
+  --accent-foreground: oklch(12% 0.015 30);
+  --destructive: oklch(55% 0.22 25);
+  --destructive-foreground: oklch(97.5% 0.008 85);
+  --border: oklch(82% 0.012 80);
+  --input: oklch(90% 0.01 80);
+  --ring: oklch(12% 0.015 30);
+  --gold: oklch(72% 0.12 75);
+  --gold-light: oklch(88% 0.06 80);
+  /* Sidebar (reuse main palette) */
+  --sidebar: oklch(96% 0.006 80);
+  --sidebar-foreground: oklch(12% 0.015 30);
+  --sidebar-primary: oklch(12% 0.015 30);
+  --sidebar-primary-foreground: oklch(97.5% 0.008 85);
+  --sidebar-accent: oklch(88% 0.015 80);
+  --sidebar-accent-foreground: oklch(12% 0.015 30);
+  --sidebar-border: oklch(82% 0.012 80);
+  --sidebar-ring: oklch(12% 0.015 30);
+  --chart-1: oklch(72% 0.12 75);
+  --chart-2: oklch(60% 0.1 30);
+  --chart-3: oklch(50% 0.08 200);
+  --chart-4: oklch(65% 0.09 120);
+  --chart-5: oklch(55% 0.11 280);
 }
 
 .dark {
@@ -119,6 +123,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -175,3 +187,58 @@
     }
   }
 }
+/* ── Editorial Utilities ─────────────────────────────────────────────────── */
+
+.font-display {
+  font-family: 'Playfair Display', 'Georgia', serif;
+}
+
+.font-body {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+}
+
+.font-label {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  font-weight: 500;
+}
+
+.quote-text {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-style: italic;
+  line-height: 1.65;
+}
+
+.rule-line {
+  border-top: 1px solid oklch(82% 0.012 80);
+}
+
+.rule-line-gold {
+  border-top: 1px solid var(--gold);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: oklch(75% 0.01 80); border-radius: 2px; }
