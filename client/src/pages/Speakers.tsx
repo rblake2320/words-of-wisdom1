@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function Speakers() {
   const { data: speakerNames = [], isLoading } = trpc.quotes.speakerNames.useQuery();
+  const { data: stats } = trpc.quotes.stats.useQuery();
 
   return (
     <main className="min-h-screen">
@@ -20,7 +21,7 @@ export default function Speakers() {
               The <span className="italic font-normal">Speakers</span>
             </h1>
             <p className="font-body text-foreground/55 text-lg italic">
-              Entrepreneurs, investors, and visionaries who built from nothing
+              {stats?.totalSpeakers ?? speakerNames.length} entrepreneurs, investors, and visionaries who built from nothing
             </p>
           </div>
         </div>

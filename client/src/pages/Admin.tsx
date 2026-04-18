@@ -15,7 +15,9 @@ export default function Admin() {
     topic: "",
   });
 
-  const { data: stats } = trpc.admin.stats.useQuery(undefined, {
+  const utils = trpc.useUtils();
+
+  const { data: stats, refetch: refetchStats } = trpc.admin.stats.useQuery(undefined, {
     enabled: isAuthenticated && user?.role === "admin",
   });
 
@@ -24,11 +26,20 @@ export default function Admin() {
     { enabled: isAuthenticated && user?.role === "admin" }
   );
 
+  const invalidateAll = () => {
+    refetchQuotes();
+    refetchStats();
+    utils.quotes.stats.invalidate();
+    utils.quotes.speakerNames.invalidate();
+    utils.quotes.topics.invalidate();
+    utils.quotes.daily.invalidate();
+  };
+
   const addQuote = trpc.quotes.add.useMutation({
     onSuccess: () => {
       toast.success("Quote added successfully");
       setForm({ text: "", speakerName: "", videoUrl: "", videoTitle: "", topic: "" });
-      refetchQuotes();
+      invalidateAll();
     },
     onError: (e) => toast.error(e.message),
   });
@@ -36,7 +47,7 @@ export default function Admin() {
   const deleteQuote = trpc.quotes.delete.useMutation({
     onSuccess: () => {
       toast.success("Quote deleted");
-      refetchQuotes();
+      invalidateAll();
     },
     onError: (e) => toast.error(e.message),
   });

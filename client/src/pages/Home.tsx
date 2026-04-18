@@ -13,6 +13,7 @@ export default function Home() {
   const [subEmail, setSubEmail] = useState(user?.email ?? "");
 
   const { data: daily, isLoading } = trpc.quotes.daily.useQuery();
+  const { data: stats } = trpc.quotes.stats.useQuery();
   const { data: favoriteIds = [], refetch: refetchFavs } = trpc.favorites.ids.useQuery(
     undefined,
     { enabled: isAuthenticated }
@@ -238,7 +239,7 @@ export default function Home() {
             <Link href="/library" className="bg-background p-8 hover:bg-accent/30 transition-colors group">
               <p className="font-label text-foreground/40 mb-3">Explore</p>
               <h3 className="font-display text-xl font-bold mb-2 group-hover:text-foreground/70 transition-colors">Quote Library</h3>
-              <p className="font-body text-foreground/55 italic">Browse all 169 pieces of wisdom, searchable by topic or speaker.</p>
+              <p className="font-body text-foreground/55 italic">Browse all {stats?.totalQuotes ?? "…"} pieces of wisdom, searchable by topic or speaker.</p>
             </Link>
             <Link href="/speakers" className="bg-background p-8 hover:bg-accent/30 transition-colors group">
               <p className="font-label text-foreground/40 mb-3">Profiles</p>

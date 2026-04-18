@@ -254,3 +254,17 @@ export async function markSeeded() {
   if (!db) return;
   await db.insert(seededFlag).values({});
 }
+
+// ── Public Stats ─────────────────────────────────────────────────────────────
+export async function getPublicStats() {
+  const db = await getDb();
+  if (!db) return { totalQuotes: 0, totalSpeakers: 0, totalTopics: 0 };
+  const allQuotes = await db.select().from(quotes);
+  const speakerSet = new Set(allQuotes.map((q) => q.speakerName).filter(Boolean));
+  const topicSet = new Set(allQuotes.map((q) => q.topic).filter(Boolean));
+  return {
+    totalQuotes: allQuotes.length,
+    totalSpeakers: speakerSet.size,
+    totalTopics: topicSet.size,
+  };
+}

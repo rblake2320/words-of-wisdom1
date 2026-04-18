@@ -22,6 +22,7 @@ import {
   toggleFavorite,
   upsertSubscription,
   getDb,
+  getPublicStats,
 } from "./db";
 import { seedQuotes } from "./seedData";
 import { shortsSeedData } from "./shortsSeedData";
@@ -118,7 +119,9 @@ export const appRouter = router({
     speakerNames: publicProcedure.query(async () => {
       return await getSpeakerNames();
     }),
-
+    stats: publicProcedure.query(async () => {
+      return await getPublicStats();
+    }),
     bySpeaker: publicProcedure
       .input(z.object({ speakerName: z.string() }))
       .query(async ({ input }) => {

@@ -18,6 +18,7 @@ export default function Library() {
 
   const { data: topics = [] } = trpc.quotes.topics.useQuery();
   const { data: speakerNames = [] } = trpc.quotes.speakerNames.useQuery();
+  const { data: stats } = trpc.quotes.stats.useQuery();
   const { data: favoriteIds = [], refetch: refetchFavs } = trpc.favorites.ids.useQuery(
     undefined,
     { enabled: isAuthenticated }
@@ -29,7 +30,7 @@ export default function Library() {
     setSelectedSpeaker("");
   };
 
-  const hasFilters = search || selectedTopic || selectedSpeaker;
+  const hasFilters = !!(search || selectedTopic || selectedSpeaker);
 
   return (
     <main className="min-h-screen">
@@ -46,7 +47,9 @@ export default function Library() {
               Quote <span className="italic font-normal">Library</span>
             </h1>
             <p className="font-body text-foreground/55 text-lg italic">
-              {quotes.length} pieces of wisdom from the School of Hard Knocks
+              {hasFilters
+                ? `${quotes.length} of ${stats?.totalQuotes ?? "…"} pieces of wisdom`
+                : `${stats?.totalQuotes ?? quotes.length} pieces of wisdom from the School of Hard Knocks`}
             </p>
           </div>
         </div>

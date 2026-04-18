@@ -45,3 +45,8 @@
 - [x] Extract advice from all 559 YouTube Shorts using parallel AI analysis
 - [x] Clean and deduplicate 390 unique Shorts quotes (169 already in DB from full-length videos)
 - [x] Seed all 390 Shorts quotes into the database (total: 559 quotes)
+
+## Bug Fixes
+- [x] Fix hardcoded "169" quote count on Home page — replaced with live stats tRPC query
+- [x] Fix all static counts/stats throughout the app to use real-time tRPC data
+- [x] Ensure new quotes added via Admin are reflected immediately everywhere (no stale counts)
