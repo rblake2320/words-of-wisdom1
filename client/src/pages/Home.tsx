@@ -1,7 +1,8 @@
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { Copy, Check, Bookmark, BookmarkCheck, ExternalLink, Bell, BellOff } from "lucide-react";
+import { Copy, Check, Bookmark, BookmarkCheck, ExternalLink, Bell, BellOff, Share2 } from "lucide-react";
+import ShareQuoteModal from "@/components/ShareQuoteModal";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Link } from "wouter";
@@ -9,6 +10,7 @@ import { Link } from "wouter";
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
   const [copied, setCopied] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [showSubscribeForm, setShowSubscribeForm] = useState(false);
   const [subEmail, setSubEmail] = useState(user?.email ?? "");
 
@@ -155,10 +157,24 @@ export default function Home() {
                     Watch Video
                   </a>
                 )}
+                <button
+                  onClick={() => setShowShare(true)}
+                  className="flex items-center gap-2 font-label text-foreground/50 hover:text-foreground border border-foreground/20 hover:border-foreground/50 px-4 py-2 transition-all"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  Share
+                </button>
               </div>
             </div>
           ) : (
             <p className="text-center font-body text-foreground/50">No quote available today.</p>
+          )}
+          {/* Share modal */}
+          {showShare && daily && (
+            <ShareQuoteModal
+              quote={{ id: daily.id, text: daily.text, speaker: daily.speakerName ?? "School of Hard Knocks", topic: daily.topic, videoUrl: daily.videoUrl }}
+              onClose={() => setShowShare(false)}
+            />
           )}
 
           {/* Bottom rule */}

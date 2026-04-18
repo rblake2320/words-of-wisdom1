@@ -1,10 +1,11 @@
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { Bookmark, BookmarkCheck, Copy, ExternalLink, Check } from "lucide-react";
+import { Bookmark, BookmarkCheck, Copy, ExternalLink, Check, Share2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Link } from "wouter";
+import ShareQuoteModal from "./ShareQuoteModal";
 
 type Quote = {
   id: number;
@@ -31,6 +32,7 @@ export default function QuoteCard({
 }: QuoteCardProps) {
   const { isAuthenticated } = useAuth();
   const [copied, setCopied] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const isFavorited = favoriteIds.includes(quote.id);
 
   const toggleFav = trpc.favorites.toggle.useMutation({
@@ -58,97 +60,123 @@ export default function QuoteCard({
 
   if (variant === "compact") {
     return (
-      <div className="group border-b border-foreground/10 py-5 hover:bg-accent/30 transition-colors px-2 -mx-2">
-        <p className="quote-text text-base text-foreground/85 mb-2 leading-relaxed">
-          "{quote.text}"
-        </p>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {quote.speakerName && (
-              <Link
-                href={`/speakers/${encodeURIComponent(quote.speakerName)}`}
-                className="font-label text-foreground/50 hover:text-foreground transition-colors"
-              >
-                {quote.speakerName}
-              </Link>
-            )}
-            {quote.topic && (
-              <span className="font-label text-foreground/30">{quote.topic}</span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button onClick={handleCopy} className="p-1 text-foreground/40 hover:text-foreground transition-colors" title="Copy">
-              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-            </button>
-            <button onClick={handleFavorite} className="p-1 text-foreground/40 hover:text-foreground transition-colors" title="Save">
-              {isFavorited ? <BookmarkCheck className="w-3.5 h-3.5 text-foreground" /> : <Bookmark className="w-3.5 h-3.5" />}
-            </button>
-            {quote.videoUrl && (
-              <a href={quote.videoUrl} target="_blank" rel="noopener noreferrer" className="p-1 text-foreground/40 hover:text-foreground transition-colors" title="Watch video">
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            )}
+      <>
+        <div className="group border-b border-foreground/10 py-5 hover:bg-accent/30 transition-colors px-2 -mx-2">
+          <p className="quote-text text-base text-foreground/85 mb-2 leading-relaxed">
+            "{quote.text}"
+          </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {quote.speakerName && (
+                <Link
+                  href={`/speakers/${encodeURIComponent(quote.speakerName)}`}
+                  className="font-label text-foreground/50 hover:text-foreground transition-colors"
+                >
+                  {quote.speakerName}
+                </Link>
+              )}
+              {quote.topic && (
+                <span className="font-label text-foreground/30">{quote.topic}</span>
+              )}
+            </div>
+            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onClick={handleCopy} className="p-1 text-foreground/40 hover:text-foreground transition-colors" title="Copy">
+                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              </button>
+              <button onClick={handleFavorite} className="p-1 text-foreground/40 hover:text-foreground transition-colors" title="Save">
+                {isFavorited ? <BookmarkCheck className="w-3.5 h-3.5 text-foreground" /> : <Bookmark className="w-3.5 h-3.5" />}
+              </button>
+              {quote.videoUrl && (
+                <a href={quote.videoUrl} target="_blank" rel="noopener noreferrer" className="p-1 text-foreground/40 hover:text-foreground transition-colors" title="Watch video">
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+              <button onClick={() => setShowShare(true)} className="p-1 text-foreground/40 hover:text-foreground transition-colors" title="Share">
+                <Share2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+        {showShare && (
+          <ShareQuoteModal
+            quote={{ id: quote.id, text: quote.text, speaker: quote.speakerName ?? "School of Hard Knocks", topic: quote.topic, videoUrl: quote.videoUrl }}
+            onClose={() => setShowShare(false)}
+          />
+        )}
+      </>
     );
   }
 
   return (
-    <div className="group border border-foreground/10 p-6 hover:border-foreground/25 transition-all bg-card">
-      {quote.topic && (
-        <div className="mb-4">
-          <span className="font-label text-foreground/40">{quote.topic}</span>
-          <div className="mt-2 rule-line-gold w-8" style={{ borderTopWidth: "1px", borderTopColor: "var(--gold)" }} />
-        </div>
-      )}
-      <blockquote className="quote-text text-lg text-foreground/85 mb-5 leading-relaxed">
-        "{quote.text}"
-      </blockquote>
-      <div className="flex items-center justify-between">
-        <div>
-          {quote.speakerName && (
-            <Link
-              href={`/speakers/${encodeURIComponent(quote.speakerName)}`}
-              className="font-display text-sm font-bold hover:text-foreground/60 transition-colors"
-            >
-              {quote.speakerName}
-            </Link>
-          )}
-          <p className="font-label text-foreground/35 mt-0.5">School of Hard Knocks</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleCopy}
-            className="p-2 text-foreground/30 hover:text-foreground transition-colors hover:bg-accent rounded"
-            title="Copy quote"
-          >
-            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          </button>
-          <button
-            onClick={handleFavorite}
-            className="p-2 text-foreground/30 hover:text-foreground transition-colors hover:bg-accent rounded"
-            title={isFavorited ? "Remove from saved" : "Save quote"}
-          >
-            {isFavorited ? (
-              <BookmarkCheck className="w-4 h-4 text-foreground" />
-            ) : (
-              <Bookmark className="w-4 h-4" />
+    <>
+      <div className="group border border-foreground/10 p-6 hover:border-foreground/25 transition-all bg-card">
+        {quote.topic && (
+          <div className="mb-4">
+            <span className="font-label text-foreground/40">{quote.topic}</span>
+            <div className="mt-2 rule-line-gold w-8" style={{ borderTopWidth: "1px", borderTopColor: "var(--gold)" }} />
+          </div>
+        )}
+        <blockquote className="quote-text text-lg text-foreground/85 mb-5 leading-relaxed">
+          "{quote.text}"
+        </blockquote>
+        <div className="flex items-center justify-between">
+          <div>
+            {quote.speakerName && (
+              <Link
+                href={`/speakers/${encodeURIComponent(quote.speakerName)}`}
+                className="font-display text-sm font-bold hover:text-foreground/60 transition-colors"
+              >
+                {quote.speakerName}
+              </Link>
             )}
-          </button>
-          {quote.videoUrl && (
-            <a
-              href={quote.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <p className="font-label text-foreground/35 mt-0.5">School of Hard Knocks</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCopy}
               className="p-2 text-foreground/30 hover:text-foreground transition-colors hover:bg-accent rounded"
-              title="Watch source video"
+              title="Copy quote"
             >
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          )}
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            </button>
+            <button
+              onClick={handleFavorite}
+              className="p-2 text-foreground/30 hover:text-foreground transition-colors hover:bg-accent rounded"
+              title={isFavorited ? "Remove from saved" : "Save quote"}
+            >
+              {isFavorited ? (
+                <BookmarkCheck className="w-4 h-4 text-foreground" />
+              ) : (
+                <Bookmark className="w-4 h-4" />
+              )}
+            </button>
+            {quote.videoUrl && (
+              <a
+                href={quote.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 text-foreground/30 hover:text-foreground transition-colors hover:bg-accent rounded"
+                title="Watch source video"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+            <button
+              onClick={() => setShowShare(true)}
+              className="p-2 text-foreground/30 hover:text-foreground transition-colors hover:bg-accent rounded"
+              title="Share quote"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      {showShare && (
+        <ShareQuoteModal
+          quote={{ id: quote.id, text: quote.text, speaker: quote.speakerName ?? "School of Hard Knocks", topic: quote.topic, videoUrl: quote.videoUrl }}
+          onClose={() => setShowShare(false)}
+        />
+      )}
+    </>
   );
 }

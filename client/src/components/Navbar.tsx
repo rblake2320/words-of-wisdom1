@@ -13,6 +13,7 @@ export default function Navbar() {
     { href: "/", label: "Today" },
     { href: "/library", label: "Library" },
     { href: "/speakers", label: "Speakers" },
+    { href: "/james", label: "About James" },
     ...(isAuthenticated ? [{ href: "/favorites", label: "Saved" }] : []),
     ...(user?.role === "admin" ? [{ href: "/admin", label: "Admin" }] : []),
   ];

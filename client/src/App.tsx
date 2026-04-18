@@ -10,11 +10,14 @@ import Speakers from "./pages/Speakers";
 import SpeakerDetail from "./pages/SpeakerDetail";
 import Favorites from "./pages/Favorites";
 import Admin from "./pages/Admin";
+import JamesProfile from "./pages/JamesProfile";
 import Navbar from "./components/Navbar";
+import WelcomeScreen from "./components/WelcomeScreen";
 
 function Router() {
   return (
     <div className="min-h-screen bg-background">
+      <WelcomeScreen />
       <Navbar />
       <Switch>
         <Route path="/" component={Home} />
@@ -23,6 +26,7 @@ function Router() {
         <Route path="/speakers/:name" component={SpeakerDetail} />
         <Route path="/favorites" component={Favorites} />
         <Route path="/admin" component={Admin} />
+        <Route path="/james" component={JamesProfile} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

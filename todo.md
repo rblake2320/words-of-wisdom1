@@ -52,14 +52,14 @@
 - [x] Ensure new quotes added via Admin are reflected immediately everywhere (no stale counts)
 
 ## V2 — Pitch-Ready Enhancement Features
-- [ ] Save v1 checkpoint before changes
+- [x] Save v1 checkpoint before changes (c0af8cad)
 - [ ] Add timestamp field to quotes table so video plays from exact quote moment
 - [ ] Deep-link video URLs to timestamp (YouTube ?t= parameter)
-- [ ] Enhanced share feature: shareable quote card with video link + Skool join CTA
-- [ ] Social share buttons: Twitter/X, WhatsApp, copy link, native share API
-- [ ] James Dumoulin profile page: bio, businesses, stats, social links, Skool CTA
+- [x] Enhanced share feature: shareable quote card with video link + Skool join CTA
+- [x] Social share buttons: Twitter/X, Facebook, LinkedIn, native share API, copy text
+- [x] James Dumoulin profile page: bio, businesses, stats, social links, Skool CTA
 - [ ] Add socialLink / businessLink fields to speakers table
 - [ ] Admin panel: edit speaker social/business links
 - [ ] Speaker cards show social/business link badges
-- [ ] Navigation update: add "About James" page to navbar
-- [ ] Run all tests and save v2 checkpoint
+- [x] Navigation update: add "About James" page to navbar
+- [x] Run all tests and save v2 checkpoint (12 tests passing)
