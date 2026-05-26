@@ -2,6 +2,11 @@
 
 > Daily inspirational quotes sourced from *The School of Hard Knocks* YouTube channel — featuring the hard-won wisdom of James Dumoulin and the entrepreneurs he interviews.
 
+[![CI](https://github.com/rblake2320/words-of-wisdom1/actions/workflows/ci.yml/badge.svg)](https://github.com/rblake2320/words-of-wisdom1/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-9.x-orange)](https://pnpm.io/)
+
 **Live App:** [words-of-wisdom.manus.space](https://words-of-wisdom.manus.space)
 
 ---
@@ -131,9 +136,9 @@ UPDATE users SET role = 'admin' WHERE open_id = '<your-manus-open-id>';
 
 ## Roadmap
 
-- [ ] Timestamp deep-links — jump to the exact second a quote was said in the source video
-- [ ] Quote of the Day email — automated daily email to subscribers
-- [ ] Random Quote button — one-tap discovery
+- [x] Timestamp deep-links — 417 of 559 quotes now deep-link to the exact second in the source video
+- [x] Quote of the Day email — automated daily Heartbeat cron dispatches the daily quote to all subscribers
+- [x] Random Quote button — "Surprise Me" button for instant discovery from the full vault
 - [ ] AI Adviser — conversational model grounded in all 559 quotes
 - [ ] Additional channels — expand beyond School of Hard Knocks
 - [ ] Stripe subscription — premium tier for power users
@@ -145,6 +150,35 @@ UPDATE users SET role = 'admin' WHERE open_id = '<your-manus-open-id>';
 This app was built as a partnership proposal for James Dumoulin. The vision: a branded daily wisdom platform that drives traffic back to his YouTube channel, grows his Skool community, and creates a monetizable content archive from the library he's already built.
 
 Every feature is designed to add value to his brand — not just to the user.
+
+---
+
+---
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting a pull request. All contributors are expected to follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+---
+
+## Security
+
+For responsible disclosure of security vulnerabilities, see [docs/SECURITY.md](./docs/SECURITY.md). Please do not report security issues through public GitHub issues.
+
+---
+
+## Related Projects
+
+| Project | Description |
+|---|---|
+| [quotehub-showcase](https://github.com/rblake2320/quotehub-showcase) | Investor-facing platform showcase for the QuoteHub product vision |
+| [justin-did-you-know](https://github.com/rblake2320/justin-did-you-know) | Daily facts app powered by Justin Danger Nunley's YouTube Shorts |
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
 
 ---
 
