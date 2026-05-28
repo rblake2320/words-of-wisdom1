@@ -28,6 +28,7 @@ import { seedQuotes } from "./seedData";
 import { shortsSeedData } from "./shortsSeedData";
 import { quotes } from "../drizzle/schema";
 import { notifyOwner } from "./_core/notification";
+import { aiRouter } from "./aiRouter";
 
 // ── Admin guard ───────────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -192,6 +193,9 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
+
+  // ── AI Adviser ───────────────────────────────────────────────────────────────
+  ai: aiRouter,
 
   // ── Admin ─────────────────────────────────────────────────────────────────
   admin: router({
