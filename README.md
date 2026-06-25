@@ -37,6 +37,39 @@ The app is designed as a branded product pitch for James: a companion platform t
 
 ---
 
+## AI Upsell Opportunity
+
+The base app proves the creator value: convert James's existing content library into a daily wisdom product that drives users back to YouTube, Skool, and other lanes. The AI layer should be a premium upsell, not the free core experience.
+
+Possible AI premium features:
+
+| Feature | Description |
+|---|---|
+| **Ask James's Wisdom Vault** | Conversational Q&A grounded only in the 559 approved quotes and source videos |
+| **Explain This Quote** | Expands a quote into context, key lesson, action step, and source link |
+| **Personalized Daily Wisdom** | AI chooses daily quotes by user goals such as discipline, business, identity, wealth, or faith |
+| **Speaker Insight Mode** | Ask what a specific guest/speaker has said across the archive |
+| **Skool Growth Assistant** | Suggests which quotes should route users to Skool, YouTube, newsletter, coaching, or offers |
+| **Premium Collections** | AI groups quotes into guided paths such as Confidence, Entrepreneurship, Discipline, and Comeback Season |
+
+Suggested upsell path:
+
+```text
+Free: Daily quote, archive, source links, sharing
+Plus: Unlimited saves, personalized daily wisdom, explain-this-quote
+Pro: Ask the Wisdom Vault, speaker insights, premium collections
+Creator/Partner: AI content extraction, CTA optimization, analytics
+```
+
+Guardrails:
+
+- AI answers should cite or link to the quote/source video where possible.
+- AI should not invent statements from James or guests.
+- Human approval should remain available for public AI-generated summaries or Drops.
+- The app should clearly distinguish original quotes from AI-generated explanations.
+
+---
+
 ## Design System
 
 The app uses an editorial Didone serif aesthetic — the visual language of luxury magazines and literary journals — to give James's words the weight they deserve.
@@ -140,6 +173,7 @@ UPDATE users SET role = 'admin' WHERE open_id = '<your-manus-open-id>';
 - [x] Quote of the Day email — automated daily Heartbeat cron dispatches the daily quote to all subscribers
 - [x] Random Quote button — "Surprise Me" button for instant discovery from the full vault
 - [ ] AI Adviser — conversational model grounded in all 559 quotes
+- [ ] AI Upsell Layer — personalized wisdom, quote explainers, premium collections, and Ask-the-Vault subscription features
 - [ ] Additional channels — expand beyond School of Hard Knocks
 - [ ] Stripe subscription — premium tier for power users
 
