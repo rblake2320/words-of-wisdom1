@@ -5,6 +5,8 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
+import { registerAuthRoutes } from "../authRoutes";
+import { registerEmailRoutes } from "../emailRoutes";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -29,6 +31,10 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+    console.error("[Fatal] JWT_SECRET must be set in production — sessions cannot be signed without it.");
+    process.exit(1);
+  }
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
@@ -36,6 +42,8 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+  registerAuthRoutes(app);
+  registerEmailRoutes(app);
   // tRPC API
   app.use(
     "/api/trpc",

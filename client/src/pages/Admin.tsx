@@ -53,10 +53,17 @@ export default function Admin() {
   });
 
   const sendNotification = trpc.admin.sendDailyNotification.useMutation({
-    onSuccess: (data) =>
-      data.sent > 0
-        ? toast.success(`Owner digest sent (${data.subscriberCount} active subscriber(s))`)
-        : toast.error("Notification service unavailable — digest not sent"),
+    onSuccess: (data) => {
+      if (data.mode === "email") {
+        data.failed > 0
+          ? toast.warning(`Sent ${data.sent}/${data.subscriberCount} subscriber emails (${data.failed} failed)`)
+          : toast.success(`Sent ${data.sent} subscriber email(s)`);
+      } else {
+        data.sent > 0
+          ? toast.success(`Owner digest sent (${data.subscriberCount} active subscriber(s)) — set RESEND_API_KEY for real email delivery`)
+          : toast.error("Notification service unavailable — digest not sent");
+      }
+    },
     onError: (e) => toast.error(e.message),
   });
 

@@ -22,6 +22,13 @@
       "when": 1785998338935,
       "tag": "0002_many_eternals",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1785999190488,
+      "tag": "0003_minor_spacker_dave",
+      "breakpoints": true
     }
   ]
 }

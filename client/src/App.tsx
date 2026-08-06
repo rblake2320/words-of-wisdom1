@@ -13,6 +13,7 @@ import Admin from "./pages/Admin";
 import JamesProfile from "./pages/JamesProfile";
 import Navbar from "./components/Navbar";
 import Adviser from "./pages/Adviser";
+import Login from "./pages/Login";
 import WelcomeScreen from "./components/WelcomeScreen";
 
 function Router() {
@@ -29,6 +30,7 @@ function Router() {
         <Route path="/admin" component={Admin} />
         <Route path="/james" component={JamesProfile} />
         <Route path="/adviser" component={Adviser} />
+        <Route path="/login" component={Login} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

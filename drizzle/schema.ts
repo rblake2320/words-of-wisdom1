@@ -20,6 +20,8 @@ export const speakers = mysqlTable("speakers", {
   name: varchar("name", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   bio: text("bio"),
+  socialLink: varchar("socialLink", { length: 512 }),
+  businessLink: varchar("businessLink", { length: 512 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -33,6 +35,7 @@ export const quotes = mysqlTable("quotes", {
   speakerName: varchar("speakerName", { length: 255 }),
   videoUrl: varchar("videoUrl", { length: 512 }),
   videoTitle: varchar("videoTitle", { length: 512 }),
+  videoTimestamp: int("videoTimestamp"),
   topic: varchar("topic", { length: 128 }),
   source: varchar("source", { length: 255 }).default("School of Hard Knocks"),
   featured: boolean("featured").default(false),

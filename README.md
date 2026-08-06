@@ -32,7 +32,7 @@ The app is designed as a branded product pitch for James: a companion platform t
 | **Welcome Screen** | First-time visitors see a James intro screen (once, via localStorage) |
 | **James Profile** | Dedicated `/james` page with bio, businesses, revenue metrics, and social links |
 | **Admin Panel** | Owner-only panel for adding/deleting quotes and sending notifications |
-| **Daily Notifications** | Subscribers opt in; admin dispatch currently sends an owner digest (subscriber email delivery needs an email provider — see Roadmap) |
+| **Daily Notifications** | Subscribers opt in; admin dispatch emails every subscriber via Resend (per-recipient, signed one-click unsubscribe). Falls back to an owner digest when `RESEND_API_KEY` is unset |
 | **Live Stats** | All counts (quotes, speakers, topics) are live from the database — never hardcoded |
 
 ---
@@ -91,7 +91,7 @@ The app uses an editorial Didone serif aesthetic — the visual language of luxu
 | **Frontend** | React 19, Tailwind CSS 4, shadcn/ui |
 | **Backend** | Express 4, tRPC 11 (end-to-end typed API) |
 | **Database** | MySQL / TiDB via Drizzle ORM |
-| **Auth** | Manus OAuth (role-based: `user` / `admin`) |
+| **Auth** | Email magic links via Resend (standalone) or Manus OAuth — both role-based: `user` / `admin` |
 | **Build** | Vite 7, TypeScript, pnpm |
 | **Tests** | Vitest (12 passing) |
 
@@ -145,6 +145,8 @@ pnpm drizzle-kit generate
 pnpm dev
 ```
 
+**Self-hosting / running without Manus:** the app is fully portable — email magic-link login, Resend-based notifications, Docker + TiDB compose stack. See [docs/SELF_HOSTING.md](./docs/SELF_HOSTING.md).
+
 **Environment variables** (injected automatically in Manus — copy `.env.example` to `.env` for local runs):
 
 | Variable | Purpose |
@@ -159,7 +161,10 @@ pnpm dev
 
 ## Admin Access
 
-The admin panel at `/admin` is visible only to users whose `role` is set to `admin` in the `users` table. To promote a user:
+The admin panel at `/admin` is visible only to users whose `role` is set to `admin` in the `users` table.
+
+- **Standalone:** set `OWNER_EMAIL` — that account gets `admin` automatically on first magic-link login.
+- **Manual promotion:**
 
 ```sql
 UPDATE users SET role = 'admin' WHERE open_id = '<your-manus-open-id>';
@@ -172,7 +177,7 @@ UPDATE users SET role = 'admin' WHERE open_id = '<your-manus-open-id>';
 - [x] Timestamp deep-links — 417 of 559 quotes now deep-link to the exact second in the source video
 - [x] Random Quote button — "Surprise Me" button for instant discovery from the full vault
 - [x] AI Adviser — Groq-powered chat grounded in the live quote database, rate-limited (10 req/min per client)
-- [ ] Quote of the Day email — subscriber delivery requires wiring an email provider (Resend/SES); today the admin action sends an owner digest with the subscriber count
+- [x] Quote of the Day email — Resend integration with per-subscriber delivery and one-click unsubscribe (set `RESEND_API_KEY` + verified `EMAIL_FROM`; owner-digest fallback without it)
 - [ ] AI Upsell Layer — personalized wisdom, quote explainers, premium collections, and Ask-the-Vault subscription features
 - [ ] Additional channels — expand beyond School of Hard Knocks
 - [ ] Stripe subscription — premium tier for power users
