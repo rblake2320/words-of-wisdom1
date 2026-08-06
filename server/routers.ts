@@ -18,7 +18,8 @@ import {
   getUserFavorites,
   insertQuote,
   isSeeded,
-  markSeeded,
+  claimSeedFlag,
+  releaseSeedFlag,
   toggleFavorite,
   upsertSubscription,
   getDb,
@@ -42,37 +43,37 @@ const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
 async function runSeed() {
   const db = await getDb();
   if (!db) return 0;
-  const seeded = await isSeeded();
-  if (seeded) return 0;
+  if (await isSeeded()) return 0;
 
-  let count = 0;
-  // Seed full-length video quotes
-  for (const q of seedQuotes) {
-    await db.insert(quotes).values({
+  // Claim the seed lock atomically so two instances can't double-seed.
+  if (!(await claimSeedFlag())) return 0;
+
+  try {
+    const longRows = seedQuotes.map((q) => ({
       text: q.text,
       speakerName: q.speakerName,
       videoUrl: q.videoUrl ?? null,
       videoTitle: q.videoTitle,
       topic: q.topic,
       source: q.source,
-    });
-    count++;
-  }
-  // Seed Shorts quotes
-  for (const q of shortsSeedData) {
-    await db.insert(quotes).values({
+    }));
+    const shortRows = shortsSeedData.map((q) => ({
       text: q.quote,
       speakerName: q.speakerName,
       videoUrl: `https://www.youtube.com/shorts/${q.videoId}`,
       videoTitle: q.videoTitle,
       topic: q.topic.toLowerCase(),
       source: "School of Hard Knocks",
-    });
-    count++;
+    }));
+    const rows = [...longRows, ...shortRows];
+    await db.insert(quotes).values(rows);
+    console.log(`[Seed] Inserted ${rows.length} quotes (${longRows.length} full-length + ${shortRows.length} shorts)`);
+    return rows.length;
+  } catch (error) {
+    // Release the lock so a restart can retry a failed seed.
+    await releaseSeedFlag().catch(() => {});
+    throw error;
   }
-  await markSeeded();
-  console.log(`[Seed] Inserted ${count} quotes (${seedQuotes.length} full-length + ${shortsSeedData.length} shorts)`);
-  return count;
 }
 
 // Auto-seed on first import
@@ -223,6 +224,10 @@ export const appRouter = router({
 
       const speaker = quote.speakerName ?? "School of Hard Knocks";
       const title = `📖 Daily Wisdom — ${speaker}`;
+      // notifyOwner reaches only the app owner (Manus has no subscriber email
+      // channel). This is an owner digest; wiring a real email provider is a
+      // prerequisite for actual subscriber delivery. Never include subscriber
+      // email addresses in notification content.
       const content = [
         `Today's quote from ${speaker}:`,
         ``,
@@ -233,18 +238,16 @@ export const appRouter = router({
         ``,
         `Read today's wisdom: ${appUrl}`,
         ``,
-        `Subscribed emails: ${subs.map(s => s.email).join(", ") || "(none)"}`,
+        `Active subscribers: ${subs.length}`,
       ].join("\n");
 
-      let sent = 0;
+      let notified = false;
       try {
-        // notifyOwner sends to the app owner; for subscriber delivery we include all emails in the content
-        await notifyOwner({ title, content });
-        sent = subs.length;
+        notified = await notifyOwner({ title, content });
       } catch (e) {
         console.error("Notification error:", e);
       }
-      return { sent };
+      return { sent: notified ? 1 : 0, subscriberCount: subs.length };
     }),
   }),
 });

@@ -15,6 +15,13 @@
       "when": 1776489322664,
       "tag": "0001_pink_puck",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1785998338935,
+      "tag": "0002_many_eternals",
+      "breakpoints": true
     }
   ]
 }

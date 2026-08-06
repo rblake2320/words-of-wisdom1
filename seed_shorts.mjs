@@ -1,6 +1,9 @@
 /**
  * One-time migration script: Insert all 390 Shorts quotes into the database.
- * Run with: node seed_shorts.mjs
+ * Run with: node seed_shorts.mjs <path-to-shorts_cleaned.json>
+ * (Historical note: originally run in the Manus sandbox against
+ * /home/ubuntu/shorts_cleaned.json. The app now auto-seeds from
+ * server/shortsSeedData.ts, so this script is normally unnecessary.)
  */
 import mysql from 'mysql2/promise';
 import { readFileSync } from 'fs';
@@ -11,8 +14,14 @@ if (!dbUrl) {
   process.exit(1);
 }
 
+const dataPath = process.argv[2];
+if (!dataPath) {
+  console.error('Usage: node seed_shorts.mjs <path-to-shorts_cleaned.json>');
+  process.exit(1);
+}
+
 // Load the cleaned shorts data
-const shortsData = JSON.parse(readFileSync('/home/ubuntu/shorts_cleaned.json', 'utf-8'));
+const shortsData = JSON.parse(readFileSync(dataPath, 'utf-8'));
 console.log(`Loaded ${shortsData.length} shorts quotes`);
 
 const conn = await mysql.createConnection(dbUrl);

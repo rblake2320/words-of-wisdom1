@@ -53,7 +53,10 @@ export default function Admin() {
   });
 
   const sendNotification = trpc.admin.sendDailyNotification.useMutation({
-    onSuccess: (data) => toast.success(`Notification sent to ${data.sent} subscriber(s)`),
+    onSuccess: (data) =>
+      data.sent > 0
+        ? toast.success(`Owner digest sent (${data.subscriberCount} active subscriber(s))`)
+        : toast.error("Notification service unavailable — digest not sent"),
     onError: (e) => toast.error(e.message),
   });
 

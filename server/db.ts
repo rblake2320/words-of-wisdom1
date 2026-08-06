@@ -190,7 +190,13 @@ export async function toggleFavorite(userId: number, quoteId: number) {
       .where(and(eq(favorites.userId, userId), eq(favorites.quoteId, quoteId)));
     return { favorited: false };
   } else {
-    await db.insert(favorites).values({ userId, quoteId });
+    // Unique (userId, quoteId) constraint makes a concurrent double-tap throw
+    // a duplicate-key error — treat that as already favorited.
+    try {
+      await db.insert(favorites).values({ userId, quoteId });
+    } catch (error: any) {
+      if (error?.code !== "ER_DUP_ENTRY") throw error;
+    }
     return { favorited: true };
   }
 }
@@ -249,10 +255,27 @@ export async function isSeeded() {
   return result.length > 0;
 }
 
-export async function markSeeded() {
+/**
+ * Atomically claim the seed lock by inserting the fixed-id flag row.
+ * Returns false if another instance already claimed it (duplicate key),
+ * so concurrent server instances can't double-seed.
+ */
+export async function claimSeedFlag(): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db.insert(seededFlag).values({ id: 1 });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Release the seed lock after a failed seed so a restart can retry. */
+export async function releaseSeedFlag() {
   const db = await getDb();
   if (!db) return;
-  await db.insert(seededFlag).values({});
+  await db.delete(seededFlag).where(eq(seededFlag.id, 1));
 }
 
 // ── Public Stats ─────────────────────────────────────────────────────────────
