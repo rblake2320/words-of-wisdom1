@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
-import AIChatBox from "@/components/AIChatBox";
+import { AIChatBox } from "@/components/AIChatBox";
 
 type Message = { role: "system" | "user" | "assistant"; content: string };
 
