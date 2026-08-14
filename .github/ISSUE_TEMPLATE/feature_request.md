@@ -32,7 +32,7 @@ assignees: rblake2320
 - [ ] Search / Filtering
 - [ ] Admin / Data Management
 - [ ] Performance / Infrastructure
-- [ ] Other: ___________
+- [ ] Other (describe below)
 
 ## Additional Context
 
