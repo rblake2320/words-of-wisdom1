@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wisdom
+      MARIADB_USER: wisdom
+      MARIADB_PASSWORD: ${DB_PASSWORD:?required}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?required}
+    volumes:
+      - review-db:/var/lib/mysql
+    healthcheck:
+      test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  app:
+    build: ..
+    restart: unless-stopped
+    command: [sh, -c, "node dist/migrate.js && exec node dist/index.js"]
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      JWT_SECRET: ${JWT_SECRET:?required}
+      DATABASE_URL: mysql://wisdom:${DB_PASSWORD}@db:3306/wisdom
+      APP_URL: https://wisdom-review.2.25.136.64.sslip.io
+    ports:
+      - 127.0.0.1:3087:3000
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.wisdom-review.rule: Host(`wisdom-review.2.25.136.64.sslip.io`)
+      traefik.http.routers.wisdom-review.entrypoints: websecure
+      traefik.http.routers.wisdom-review.tls.certresolver: letsencrypt
+      traefik.http.services.wisdom-review.loadbalancer.server.port: "3000"
+volumes:
+  review-db:

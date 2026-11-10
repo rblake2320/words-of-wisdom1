@@ -2,7 +2,8 @@
 
 ## System Summary
 
-Words of Wisdom is a full-stack web application that surfaces daily inspirational quotes from The School of Hard Knocks YouTube channel. It is built on a React + Express + MySQL/TiDB stack, deployed on the Manus platform.
+React frontend and Express/tRPC API backed by a dedicated MySQL-compatible database. Signed sessions use email magic-link login through Resend.
+
 
 ---
 
@@ -13,10 +14,8 @@ Words of Wisdom is a full-stack web application that surfaces daily inspirationa
 | Frontend | React 19, Vite, TypeScript, Tailwind CSS 4, shadcn/ui |
 | Backend | Node.js, Express 4, tRPC 11 |
 | Database | MySQL / TiDB (via Drizzle ORM) |
-| Auth | Manus OAuth (JWT session cookies) |
 | Testing | Vitest |
 | Package Manager | pnpm |
-| Deployment | Manus Platform (Cloud Run) |
 
 ---
 
@@ -34,7 +33,7 @@ words-of-wisdom/
 │   │   ├── App.tsx          # Route definitions
 │   │   └── index.css        # Global design tokens
 ├── server/
-│   ├── _core/               # Framework plumbing (OAuth, tRPC context, LLM)
+│   ├── _core/               # Session authentication and tRPC context
 │   ├── routers.ts           # All tRPC procedures
 │   ├── db.ts                # Drizzle query helpers
 │   ├── scheduledHandlers.ts # Heartbeat cron handlers
@@ -74,7 +73,6 @@ words-of-wisdom/
 
 **`subscriptions`** — Email subscriptions for the daily wisdom digest.
 
-**`users`** — Authenticated users (via Manus OAuth).
 
 ---
 
@@ -82,16 +80,15 @@ words-of-wisdom/
 
 All client-server communication uses **tRPC** over `/api/trpc`. There are no hand-written REST routes except for:
 
-- `/api/oauth/callback` — Manus OAuth completion
-- `/api/scheduled/daily-wisdom` — Heartbeat cron endpoint for daily email dispatch
+- `/api/auth/email` — verifies an email magic link and sets the session cookie
+- `/api/unsubscribe` — verifies a signed unsubscribe link
 
 ### Key tRPC Procedures
 
 | Procedure | Type | Auth | Description |
 |---|---|---|---|
 | `quotes.daily` | query | public | Returns today's quote (deterministic by date) |
-| `quotes.random` | query | public | Returns a random quote from the full library |
-| `quotes.list` | query | public | Paginated quote library with filters |
+| `quotes.list` | query | public | Quote library with search and topic filters |
 | `quotes.bySpeaker` | query | public | All quotes by a given speaker |
 | `quotes.stats` | query | public | Total counts for quotes, speakers, topics |
 | `favorites.toggle` | mutation | protected | Add or remove a quote from favorites |
@@ -102,27 +99,20 @@ All client-server communication uses **tRPC** over `/api/trpc`. There are no han
 
 ---
 
-## Scheduled Jobs
+## Email Dispatch
 
-The daily email digest is powered by a **Heartbeat cron** (Manus platform-managed HTTP cron) that POSTs to `/api/scheduled/daily-wisdom` every day at 9:00 AM UTC. The handler:
-
-1. Fetches today's daily quote
-2. Collects all active subscriber emails
-3. Dispatches a notification to the project owner via the Manus notification service
+The admin procedure sends the daily quote to active subscribers through Resend.
+The review deployment does not configure a scheduled sender.
 
 ---
 
 ## Authentication Flow
 
-1. User clicks "Sign In" → redirected to Manus OAuth portal
-2. OAuth completes → `/api/oauth/callback` sets a signed `app_session_id` JWT cookie
+1. The login page requests an email magic link through Resend.
+2. `/api/auth/email` verifies the token and sets a signed `app_session_id` cookie.
 3. Every tRPC request reads the cookie via `server/_core/context.ts`
 4. Protected procedures use `protectedProcedure` which throws `UNAUTHORIZED` if no valid session
 
 ---
 
 ## Deployment
-
-The application runs as a single Node.js process on Cloud Run (via Manus Platform). The frontend is served by the same Express process in production (Vite SSR in development, static build in production). There are no separate frontend/backend deployments.
-
-Environment variables are injected by the Manus platform at runtime — no `.env` files are committed.

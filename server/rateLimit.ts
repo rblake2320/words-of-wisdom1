@@ -1,6 +1,5 @@
 /**
  * Minimal in-memory fixed-window rate limiter. Suitable for the single-server
- * Manus deployment; swap for a Redis-backed limiter if the app is ever scaled
  * to multiple instances.
  */
 interface WindowEntry {

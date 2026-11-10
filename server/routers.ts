@@ -96,7 +96,7 @@ export const appRouter = router({
       return { success: true } as const;
     }),
 
-    // Portable email magic-link login (no Manus dependency). The link is
+    // Portable email magic-link login. The link is
     // consumed by GET /api/auth/email which mints the standard session cookie.
     requestLoginLink: publicProcedure
       .input(z.object({ email: z.string().email().max(320) }))
@@ -293,24 +293,7 @@ export const appRouter = router({
           : `Active subscribers: ${subs.length} (email delivery not configured)`,
       ].join("\n");
 
-      // Owner digest: Manus notification when the forge service is configured,
-      // otherwise a Resend email to OWNER_EMAIL (standalone deployments).
-      let digestSent = false;
-      if (ENV.forgeApiUrl && ENV.forgeApiKey) {
-        try {
-          digestSent = await notifyOwner({ title, content });
-        } catch (e) {
-          console.error("Notification error:", e);
-        }
-      } else if (process.env.OWNER_EMAIL) {
-        digestSent = await sendEmail(
-          process.env.OWNER_EMAIL,
-          title,
-          `<pre style="font-family:Georgia,serif;white-space:pre-wrap;">${content
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")}</pre>`
-        );
-      }
+      const digestSent = await notifyOwner({ title, content });
 
       return {
         mode: emailResult ? ("email" as const) : ("digest" as const),

@@ -32,7 +32,6 @@ You will receive an acknowledgment within **48 hours** and a full response withi
 
 ### Authentication
 
-This application uses Manus OAuth for authentication. Session tokens are signed with a `JWT_SECRET` environment variable. Never commit `.env` files or expose secrets in code.
 
 ### Database
 
@@ -40,7 +39,6 @@ All database credentials are managed via environment variables and are never har
 
 ### API Keys
 
-All API keys and secrets are stored as environment variables. The `BUILT_IN_FORGE_API_KEY` is server-side only and never exposed to the client.
 
 ### Dependencies
 
@@ -78,5 +76,4 @@ The following are **out of scope**:
 
 - Denial of service attacks
 - Social engineering
-- Issues in third-party services (Manus platform, YouTube API)
 - Theoretical vulnerabilities without a proof of concept

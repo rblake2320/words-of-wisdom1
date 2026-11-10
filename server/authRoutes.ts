@@ -1,7 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies.js";
-import { ENV } from "./_core/env.js";
 import { sdk } from "./_core/sdk.js";
 import { verifyLoginToken } from "./authTokens.js";
 import { getUserByOpenId, upsertUser } from "./db.js";
@@ -21,10 +20,8 @@ function page(title: string, body: string): string {
 }
 
 /**
- * Portable email magic-link login — works with any hosting, no Manus OAuth
- * involved. The tRPC mutation auth.requestLoginLink issues the token; this
- * route consumes it and mints the same session cookie the OAuth flow uses,
- * so protectedProcedure/adminProcedure behave identically for both flows.
+ * The tRPC mutation auth.requestLoginLink issues a token. This route verifies
+ * it and sets the signed application session used by protected procedures.
  */
 export function registerAuthRoutes(app: Express) {
   app.get("/api/auth/email", async (req: Request, res: Response) => {
@@ -55,7 +52,7 @@ export function registerAuthRoutes(app: Express) {
       });
 
       const sessionToken = await sdk.signSession(
-        { openId, appId: ENV.appId || "standalone", name: existing?.name ?? name },
+        { openId, appId: "words-of-wisdom", name: existing?.name ?? name },
         { expiresInMs: ONE_YEAR_MS }
       );
 

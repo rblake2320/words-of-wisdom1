@@ -80,7 +80,6 @@ Feature requests are welcome. Use the **Feature Request** issue template and des
 
 - Place new page components in `client/src/pages/`.
 - Place reusable UI components in `client/src/components/`.
-- Do not store images or media in `client/public/` or `client/src/assets/`. Use the `manus-upload-file --webdev` workflow for static assets.
 
 ### Accessibility
 

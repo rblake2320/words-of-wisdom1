@@ -1,7 +1,6 @@
 /**
  * One-time migration script: Insert all 390 Shorts quotes into the database.
  * Run with: node seed_shorts.mjs <path-to-shorts_cleaned.json>
- * (Historical note: originally run in the Manus sandbox against
  * /home/ubuntu/shorts_cleaned.json. The app now auto-seeds from
  * server/shortsSeedData.ts, so this script is normally unnecessary.)
  */

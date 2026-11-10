@@ -7,9 +7,12 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-9.x-orange)](https://pnpm.io/)
 
-**Live App:** [words-of-wisdom.manus.space](https://words-of-wisdom.manus.space)
 
 ---
+
+**Review:** https://wisdom-review.2.25.136.64.sslip.io
+
+Standalone setup: [Self-hosting](docs/SELF_HOSTING.md).
 
 ## What It Is
 
@@ -91,15 +94,13 @@ The app uses an editorial Didone serif aesthetic — the visual language of luxu
 | **Frontend** | React 19, Tailwind CSS 4, shadcn/ui                                                          |
 | **Backend**  | Express 4, tRPC 11 (end-to-end typed API)                                                    |
 | **Database** | MySQL / TiDB via Drizzle ORM                                                                 |
-| **Auth**     | Email magic links via Resend (standalone) or Manus OAuth — both role-based: `user` / `admin` |
 | **Build**    | Vite 7, TypeScript, pnpm                                                                     |
-| **Tests**    | Vitest (12 passing)                                                                          |
+| **Tests**    | Vitest (34 passing)                                                                          |
 
 ---
 
 ## Quote Database
 
-All 559 quotes were extracted using `manus-analyze-video` — an LLM-powered video analysis tool — run in parallel across the entire channel archive.
 
 | Source                       | Count   |
 | ---------------------------- | ------- |
@@ -137,25 +138,20 @@ drizzle/
 # Install dependencies
 pnpm install
 
-# Run database migrations
-pnpm drizzle-kit generate
-# Apply the generated SQL via webdev_execute_sql or your DB client
+# Build and apply database migrations (set DATABASE_URL in .env first)
+pnpm build
+node --env-file=.env dist/migrate.js
 
 # Start development server
 pnpm dev
 ```
 
-**Self-hosting / running without Manus:** the app is fully portable — email magic-link login, Resend-based notifications, Docker + TiDB compose stack. See [docs/SELF_HOSTING.md](./docs/SELF_HOSTING.md).
 
-**Environment variables** (injected automatically in Manus — copy `.env.example` to `.env` for local runs):
 
 | Variable           | Purpose                           |
 | ------------------ | --------------------------------- |
 | `DATABASE_URL`     | MySQL/TiDB connection string      |
 | `JWT_SECRET`       | Session cookie signing            |
-| `VITE_APP_ID`      | Manus OAuth application ID        |
-| `OAUTH_SERVER_URL` | Manus OAuth backend               |
-| `OWNER_OPEN_ID`    | Owner's Manus ID (for admin role) |
 
 ---
 
@@ -167,7 +163,7 @@ The admin panel at `/admin` is visible only to users whose `role` is set to `adm
 - **Manual promotion:**
 
 ```sql
-UPDATE users SET role = 'admin' WHERE open_id = '<your-manus-open-id>';
+UPDATE users SET role = 'admin' WHERE email = 'owner@example.com';
 ```
 
 ---
@@ -222,5 +218,3 @@ The typed application surface is described in [docs/API.md](./docs/API.md). Auto
 This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
 
 ---
-
-_Built with [Manus](https://manus.im)_
