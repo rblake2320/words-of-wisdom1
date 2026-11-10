@@ -4,7 +4,7 @@ RUN corepack enable
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 COPY patches ./patches
-RUN pnpm install --frozen-lockfile --prod=false
+RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
@@ -15,7 +15,7 @@ RUN corepack enable
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 COPY patches ./patches
-RUN pnpm install --frozen-lockfile --prod=false
+RUN pnpm install --frozen-lockfile
 COPY --from=builder /app/dist ./dist
 COPY drizzle ./drizzle
 EXPOSE 3000

@@ -23,7 +23,7 @@ services:
       PORT: 3000
       JWT_SECRET: ${JWT_SECRET:?required}
       DATABASE_URL: mysql://wisdom:${DB_PASSWORD}@db:3306/wisdom
-      APP_URL: https://wisdom-review.2.25.136.64.sslip.io
+      APP_URL: https://words-of-wisdom-4t7.pages.dev
     ports:
       - 127.0.0.1:3087:3000
     depends_on:

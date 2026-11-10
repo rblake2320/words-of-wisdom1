@@ -4,7 +4,7 @@ Words of Wisdom runs on Node 22 and a MySQL-compatible database. Email magic-lin
 
 ## Review deployment
 
-Public URL: https://wisdom-review.2.25.136.64.sslip.io
+Public URL: https://words-of-wisdom-4t7.pages.dev
 
 The instance runs on the existing Hostinger VPS with a dedicated MariaDB database and persistent volume. Traefik supplies HTTPS. The database has no public port; the app diagnostic port binds only to loopback.
 
@@ -30,3 +30,7 @@ pnpm dev
 ```
 
 Set APP_URL to the public origin for email links. OWNER_EMAIL grants admin to that account on first email sign-in. Development displays test login links when delivery is absent; production refuses those requests.
+
+Cloudflare Pages proxies HTTPS requests to Hostinger. Deploy the public gateway with:
+
+    wrangler pages deploy deploy/pages --project-name words-of-wisdom --branch main

@@ -1,0 +1,6 @@
+{
+  "name": "words-of-wisdom-review",
+  "main": "legacy-redirect.mjs",
+  "compatibility_date": "2026-11-10",
+  "workers_dev": true
+}

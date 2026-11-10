@@ -1,0 +1,74 @@
+{
+  "origin": "https://words-of-wisdom-4t7.pages.dev",
+  "timestamp": "2026-11-10T22:08:24.604Z",
+  "results": [
+    {
+      "name": "HTTPS homepage and emitted assets contain no removed-platform references",
+      "outcome": "Worked",
+      "ms": 565,
+      "measurement": {
+        "assets": 2
+      }
+    },
+    {
+      "name": "Seeded quote library",
+      "outcome": "Worked",
+      "ms": 497,
+      "measurement": {
+        "quotes": 559
+      }
+    },
+    {
+      "name": "Daily quote with source video",
+      "outcome": "Worked",
+      "ms": 117,
+      "measurement": {
+        "id": 315,
+        "speaker": "Airbnb Millionaire"
+      }
+    },
+    {
+      "name": "Search and topic filtering",
+      "outcome": "Worked",
+      "ms": 261,
+      "measurement": {
+        "matches": 36,
+        "emptySearch": 0
+      }
+    },
+    {
+      "name": "Speaker archive",
+      "outcome": "Worked",
+      "ms": 225,
+      "measurement": {
+        "speakers": 314,
+        "firstSpeakerQuotes": 1
+      }
+    },
+    {
+      "name": "Anonymous admin mutation denied",
+      "outcome": "Worked",
+      "ms": 131,
+      "measurement": {
+        "status": 401
+      }
+    },
+    {
+      "name": "Client routes",
+      "outcome": "Worked",
+      "ms": 758,
+      "measurement": {
+        "routes": 4
+      }
+    },
+    {
+      "name": "Production sign-in without email credentials refuses to expose a login token",
+      "outcome": "Worked",
+      "ms": 126,
+      "measurement": {
+        "status": 412,
+        "emailDelivery": "requires configuration"
+      }
+    }
+  ]
+}

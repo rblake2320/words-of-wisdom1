@@ -10,7 +10,7 @@
 
 ---
 
-**Review:** https://wisdom-review.2.25.136.64.sslip.io
+**Review:** https://words-of-wisdom-4t7.pages.dev
 
 Standalone setup: [Self-hosting](docs/SELF_HOSTING.md).
 

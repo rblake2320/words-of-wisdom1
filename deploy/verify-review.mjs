@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
-const origin = process.argv[2] || 'https://wisdom-review.2.25.136.64.sslip.io';
+const origin = process.argv[2] || 'https://words-of-wisdom-4t7.pages.dev';
 const results = [];
 async function query(name, input) {
   const suffix = input === undefined ? '' : '?input=' + encodeURIComponent(JSON.stringify({json:input}));
@@ -64,6 +64,14 @@ await check('Anonymous admin mutation denied', async () => {
 await check('Client routes', async () => {
   for (const route of ['/library','/speakers','/james','/login']) assert.equal((await fetch(origin+route)).status, 200);
   return {routes:4};
+});
+await check('Production sign-in without email credentials refuses to expose a login token', async () => {
+  const response = await fetch(`${origin}/api/trpc/auth.requestLoginLink`, {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({json:{email:'review-acceptance@example.com'}})});
+  assert.equal(response.status, 412);
+  const body = await response.text();
+  assert.match(body, /Email login is not configured/);
+  assert.doesNotMatch(body, /devLink|token=/);
+  return {status:response.status, emailDelivery:'requires configuration'};
 });
 const receipt = {origin, timestamp:new Date().toISOString(), results};
 await writeFile('review-verification.json', JSON.stringify(receipt,null,2)+'\n');
